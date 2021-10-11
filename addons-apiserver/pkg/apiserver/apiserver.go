@@ -46,7 +46,7 @@ func (a *apiServer) Start() error {
 }
 
 func (a *apiServer) selfSignedCertsServerOption(o *builder.ServerOptions) *builder.ServerOptions {
-	o.RecommendedOptions.SecureServing.ServerCert.CertDirectory = "/etc/ssl/addons-apiserver"
+	o.RecommendedOptions.SecureServing.ServerCert.CertDirectory = "/home/addons-apiserver"
 	o.RecommendedOptions.SecureServing.ServerCert.PairName = "addons-apiserver"
 	o.RecommendedOptions.SecureServing.BindPort = 10299
 	if err := o.RecommendedOptions.SecureServing.
