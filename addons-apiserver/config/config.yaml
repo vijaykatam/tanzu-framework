@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: tanzu-addons-apiserver
+  name: tanzu-addons-apiserver-sa
+  namespace: tkg-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: tanzu-addons-apiserver-clusterrole
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - apiservices
+    verbs:
+      - get
+      - create
+      - update
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tanzu-addons-apiserver-clusterrolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tanzu-addons-apiserver-clusterrole
+subjects:
+  - kind: ServiceAccount
+    name: tanzu-addons-apiserver-sa
+    namespace: tkg-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tanzu-addons-apiserver
+  name: tanzu-addons-apiserver
+  namespace: tkg-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tanzu-addons-apiserver
+  template:
+    metadata:
+      labels:
+        app: tanzu-addons-apiserver
+    spec:
+      containers:
+        - image: projects-stg.registry.vmware.com/tkg/vkatam/addons-apiserver:v0.6.0-dev-12-gebd9e423-dirty
+          imagePullPolicy: IfNotPresent
+          name: tanzu-addons-apiserver
+          resources:
+            limits:
+              cpu: 100m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 40Mi
+      serviceAccount: tanzu-addons-apiserver-sa
+      terminationGracePeriodSeconds: 10
+      hostNetwork: true
