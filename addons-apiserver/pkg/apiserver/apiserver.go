@@ -8,10 +8,12 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apiserver/pkg/server/dynamiccertificates"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/util/homedir"
 	apiregv1 "k8s.io/kube-aggregator/pkg/apis/apiregistration/v1"
 	aggregatorclient "k8s.io/kube-aggregator/pkg/client/clientset_generated/clientset"
 	"net"
 	"os"
+	"path/filepath"
 	"sigs.k8s.io/apiserver-runtime/pkg/builder"
 )
 
@@ -46,7 +48,7 @@ func (a *apiServer) Start() error {
 }
 
 func (a *apiServer) selfSignedCertsServerOption(o *builder.ServerOptions) *builder.ServerOptions {
-	o.RecommendedOptions.SecureServing.ServerCert.CertDirectory = "/home/addons-apiserver"
+	o.RecommendedOptions.SecureServing.ServerCert.CertDirectory = filepath.Join(homedir.HomeDir(), "addons-apiserver")
 	o.RecommendedOptions.SecureServing.ServerCert.PairName = "addons-apiserver"
 	o.RecommendedOptions.SecureServing.BindPort = 10299
 	if err := o.RecommendedOptions.SecureServing.
@@ -69,13 +71,12 @@ func (a *apiServer) selfSignedCertsServerOption(o *builder.ServerOptions) *build
 		a.logger.Error(err, "error retrieving cert")
 		os.Exit(1)
 	}
-	apiService, err := aggClient.ApiregistrationV1().APIServices().Get(context.TODO(), "addons-apiserver", metav1.GetOptions{})
+	apiService, err := aggClient.ApiregistrationV1().APIServices().Get(context.TODO(), "v1alpha1.addon.tanzu.vmware.com", metav1.GetOptions{})
 	if err != nil {
 		if k8serrors.IsNotFound(err) {
 			addonsService := &apiregv1.APIService{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "v1alpha1.addon.tanzu.vmware.com",
-					Namespace: "tkg-system",
 				},
 				Spec: apiregv1.APIServiceSpec{
 					Group:                "addon.tanzu.vmware.com",

@@ -32,7 +32,7 @@ rules:
       - list
       - watch
   - apiGroups:
-      - ""
+      - "apiregistration.k8s.io"
     resources:
       - apiservices
     verbs:
@@ -72,7 +72,7 @@ spec:
         app: tanzu-addons-apiserver
     spec:
       containers:
-        - image: projects-stg.registry.vmware.com/tkg/vkatam/addons-apiserver:v0.6.0-dev-12-gebd9e423-dirty
+        - image: projects-stg.registry.vmware.com/tkg/vkatam/addons-apiserver:v0.6.0-dev-14-gbe6cb4de-dirty
           imagePullPolicy: IfNotPresent
           name: tanzu-addons-apiserver
           resources:
