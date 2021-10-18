@@ -20,10 +20,12 @@ import (
 // AntreaAddonConfig
 // +k8s:openapi-gen=true
 type AntreaAddonConfig struct {
-	metav1.TypeMeta   `json:",inline"`
+	metav1.TypeMeta `json:",inline"`
+	// +optional
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   AntreaAddonConfigSpec   `json:"spec,omitempty"`
+	Spec AntreaAddonConfigSpec `json:"spec"`
+	// +optional
 	Status AntreaAddonConfigStatus `json:"status,omitempty"`
 }
 
@@ -31,6 +33,7 @@ type AntreaAddonConfig struct {
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 type AntreaAddonConfigList struct {
 	metav1.TypeMeta `json:",inline"`
+	// +optional
 	metav1.ListMeta `json:"metadata,omitempty"`
 
 	Items []AntreaAddonConfig `json:"items"`

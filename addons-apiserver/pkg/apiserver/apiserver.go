@@ -15,6 +15,7 @@ import (
 	"os"
 	"path/filepath"
 	"sigs.k8s.io/apiserver-runtime/pkg/builder"
+	"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/generated/openapi"
 )
 
 type apiServer struct {
@@ -29,6 +30,7 @@ func NewApiServer(config *rest.Config, logger logr.Logger) *apiServer {
 func (a *apiServer) Start() error {
 	server := builder.APIServer.
 		WithResource(&addonconfigv1alpha1.AntreaAddonConfig{}).
+		WithOpenAPIDefinitions("addons-apiserver", "v1alpha1", openapi.GetOpenAPIDefinitions).
 		WithoutEtcd()
 	//server, err := withAPIServiceAndSelfSignedCerts(server)
 	//if err != nil {
@@ -76,7 +78,7 @@ func (a *apiServer) selfSignedCertsServerOption(o *builder.ServerOptions) *build
 		if k8serrors.IsNotFound(err) {
 			addonsService := &apiregv1.APIService{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      "v1alpha1.addon.tanzu.vmware.com",
+					Name: "v1alpha1.addon.tanzu.vmware.com",
 				},
 				Spec: apiregv1.APIServiceSpec{
 					Group:                "addon.tanzu.vmware.com",

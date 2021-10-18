@@ -72,8 +72,8 @@ spec:
         app: tanzu-addons-apiserver
     spec:
       containers:
-        - image: projects-stg.registry.vmware.com/tkg/vkatam/addons-apiserver:v0.6.0-dev-14-gbe6cb4de-dirty
-          imagePullPolicy: IfNotPresent
+        - image: projects-stg.registry.vmware.com/tkg/vkatam/addons-apiserver:v0.6.0-dev-16-g05cbff40
+          imagePullPolicy: Always
           name: tanzu-addons-apiserver
           resources:
             limits:
