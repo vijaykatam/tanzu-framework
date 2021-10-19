@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/go-logr/logr"
 	addonconfigv1alpha1 "github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis/addon/v1alpha1"
+	"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/generated/openapi"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apiserver/pkg/server/dynamiccertificates"
@@ -15,7 +16,6 @@ import (
 	"os"
 	"path/filepath"
 	"sigs.k8s.io/apiserver-runtime/pkg/builder"
-	"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/generated/openapi"
 )
 
 type apiServer struct {
@@ -28,24 +28,30 @@ func NewApiServer(config *rest.Config, logger logr.Logger) *apiServer {
 }
 
 func (a *apiServer) Start() error {
-	server := builder.APIServer.
+	return builder.APIServer.
 		WithResource(&addonconfigv1alpha1.AntreaAddonConfig{}).
 		WithOpenAPIDefinitions("addons-apiserver", "v1alpha1", openapi.GetOpenAPIDefinitions).
-		WithoutEtcd()
-	//server, err := withAPIServiceAndSelfSignedCerts(server)
-	//if err != nil {
-	//	return err
-	//}
-	//server.WithConfigFns()
-	server.WithOptionsFns(a.selfSignedCertsServerOption)
+		WithoutEtcd().
+		WithOptionsFns(a.selfSignedCertsServerOption, func(options *builder.ServerOptions) *builder.ServerOptions {
+			options.RecommendedOptions.CoreAPI = nil
+			options.RecommendedOptions.Admission = nil
+			return options
+		}).
+		Execute()
+	////server, err := withAPIServiceAndSelfSignedCerts(server)
+	////if err != nil {
+	////	return err
+	////}
+	////server.WithConfigFns()
+	//server.WithOptionsFns(a.selfSignedCertsServerOption)
+	////
+	////server.WithServerFns()
+	////cmd, err := server.Build()
+	////builder.ServerOptions{}
 	//
-	//server.WithServerFns()
-	//cmd, err := server.Build()
-	//builder.ServerOptions{}
-
-	// TODO: cert rotate
-
-	return server.Execute()
+	//// TODO: cert rotate
+	//
+	//return server.Execute()
 
 }
 
