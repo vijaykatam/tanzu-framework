@@ -11,7 +11,7 @@ ROOT_DIR	:= $(dir $(shell pwd))
 export GO111MODULE := on
 
 # Image URL to use all building/pushing image targets
-IMG ?= addons-apiserver:$(shell git describe --always --dirty --tags)
+IMG ?= projects-stg.registry.vmware.com/tkg/vkatam/addons-apiserver:$(shell git describe --always --dirty --tags)
 
 # Directories
 BIN_DIR       := bin

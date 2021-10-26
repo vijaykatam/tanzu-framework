@@ -7,7 +7,11 @@ import (
 	"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/generated/openapi"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	genericregistry "k8s.io/apiserver/pkg/registry/generic"
+	registryrest "k8s.io/apiserver/pkg/registry/rest"
 	"k8s.io/apiserver/pkg/server/dynamiccertificates"
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/util/homedir"
 	apiregv1 "k8s.io/kube-aggregator/pkg/apis/apiregistration/v1"
@@ -16,6 +20,7 @@ import (
 	"os"
 	"path/filepath"
 	"sigs.k8s.io/apiserver-runtime/pkg/builder"
+	addonregistryv1alpha1 "github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/registry/addon/v1alpha1"
 )
 
 type apiServer struct {
@@ -28,16 +33,41 @@ func NewApiServer(config *rest.Config, logger logr.Logger) *apiServer {
 }
 
 func (a *apiServer) Start() error {
-	return builder.APIServer.
-		WithResource(&addonconfigv1alpha1.AntreaAddonConfig{}).
+	antreaAddonConfig := &addonconfigv1alpha1.AntreaAddonConfig{}
+
+	server := builder.APIServer.
+		//WithResource(antreaAddonConfig).
+		//	WithResourceAndStorage(&addonconfigv1alpha1.AntreaAddonConfig{},func(s *genericregistry.Store, o *generic.StoreOptions) {
+		//      builderrest.New(antreaAddonConfig)
+		//
+		//		o.RESTOptions = genericapiserver.CompletedConfig{}.RESTOptionsGetter
+		//
+		//
+		//
+		//}).
+		WithResourceAndHandler(antreaAddonConfig, func(s *runtime.Scheme, g genericregistry.RESTOptionsGetter) (registryrest.Storage, error) {
+		clientset, err := kubernetes.NewForConfig(a.config)
+		if err != nil {
+			return nil, err
+		}
+		return addonregistryv1alpha1.NewAntreaAddonConfigREST(clientset), nil
+
+
+
+	}).
 		WithOpenAPIDefinitions("addons-apiserver", "v1alpha1", openapi.GetOpenAPIDefinitions).
 		WithoutEtcd().
 		WithOptionsFns(a.selfSignedCertsServerOption, func(options *builder.ServerOptions) *builder.ServerOptions {
 			options.RecommendedOptions.CoreAPI = nil
 			options.RecommendedOptions.Admission = nil
 			return options
-		}).
-		Execute()
+		})
+	server.DisableAdmissionControllers()
+	//server.Build()
+
+	//server.WithResource()
+	return server.Execute()
+
 	////server, err := withAPIServiceAndSelfSignedCerts(server)
 	////if err != nil {
 	////	return err

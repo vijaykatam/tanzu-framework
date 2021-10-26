@@ -29,7 +29,7 @@ func main() {
 	setupLog.Info("start apiserver")
 	a := apiserver.NewApiServer(ctrl.GetConfigOrDie(), setupLog)
 	if err := a.Start(); err != nil {
-		setupLog.Error(err, "error starting apiserver")
+		panic(err)
 		os.Exit(1)
 	}
 

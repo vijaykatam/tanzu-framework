@@ -31,15 +31,29 @@ rules:
       - get
       - list
       - watch
+  # Aggregated API server #TODO revisit these permissions
   - apiGroups:
-      - "apiregistration.k8s.io"
+      - apiregistration.k8s.io
     resources:
       - apiservices
     verbs:
       - get
       - create
       - update
-
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs: ["list", "watch", "get", "update"]
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["mutatingwebhookconfigurations"]
+    verbs: ["list", "watch"]
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["validatingwebhookconfigurations"]
+    verbs: ["list", "watch"]
+  - apiGroups: ["authorization.k8s.io"]
+    resources: ["subjectaccessreviews"]
+    verbs: ["create"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -72,7 +86,7 @@ spec:
         app: tanzu-addons-apiserver
     spec:
       containers:
-        - image: projects-stg.registry.vmware.com/tkg/vkatam/addons-apiserver:v0.6.0-dev-16-g05cbff40
+        - image: projects-stg.registry.vmware.com/tkg/vkatam/addons-apiserver:v0.6.0-dev-17-gd1b0742e-dirty
           imagePullPolicy: Always
           name: tanzu-addons-apiserver
           resources:
@@ -85,3 +99,29 @@ spec:
       serviceAccount: tanzu-addons-apiserver-sa
       terminationGracePeriodSeconds: 10
       hostNetwork: true
+---
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1alpha1.addon.tanzu.vmware.com
+spec:
+  group: addon.tanzu.vmware.com
+  groupPriorityMinimum: 100
+  version: v1alpha1
+  versionPriority: 100
+  service:
+    name: addons-apiserver
+    namespace: tkg-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: addons-apiserver
+  namespace: tkg-system
+spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 10299
+  selector:
+    app: tanzu-addons-apiserver

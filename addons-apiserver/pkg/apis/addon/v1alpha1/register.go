@@ -35,3 +35,16 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 func Resource(resource string) schema.GroupResource {
 	return SchemeGroupVersion.WithResource(resource).GroupResource()
 }
+
+//var AddToScheme = func(scheme *runtime.Scheme) error {
+//	metav1.AddToGroupVersion(scheme, schema.GroupVersion{
+//		Group:   "addon.tanzu.vmware.com",
+//		Version: "v1alpha1",
+//	})
+//	// +kubebuilder:scaffold:install
+//	scheme.AddKnownTypes(schema.GroupVersion{
+//		Group:   "addon.tanzu.vmware.com",
+//		Version: "v1alpha1",
+//	}, &AntreaAddonConfig{}, &AntreaAddonConfigList{})
+//	return nil
+//}
