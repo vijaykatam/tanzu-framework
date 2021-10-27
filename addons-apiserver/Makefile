@@ -106,5 +106,6 @@ clean: docker-remove
 
 ## --- TODO remove
 generate: ## Generate code via controller-gen
-	controller-gen object:headerFile="hack/boilerplate.go.txt",year=$(shell date +%Y) paths="./..."
+	#controller-gen object:headerFile="hack/boilerplate.go.txt",year=$(shell date +%Y) paths="./..."
+	./hack/update-codegen.sh
 	$(MAKE) fmt

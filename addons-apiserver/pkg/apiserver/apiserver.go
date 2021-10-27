@@ -5,6 +5,7 @@ import (
 	"github.com/go-logr/logr"
 	addonconfigv1alpha1 "github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis/addon/v1alpha1"
 	"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/generated/openapi"
+	addonregistryv1alpha1 "github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/registry/addon/v1alpha1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -20,7 +21,6 @@ import (
 	"os"
 	"path/filepath"
 	"sigs.k8s.io/apiserver-runtime/pkg/builder"
-	addonregistryv1alpha1 "github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/registry/addon/v1alpha1"
 )
 
 type apiServer struct {
@@ -46,15 +46,13 @@ func (a *apiServer) Start() error {
 		//
 		//}).
 		WithResourceAndHandler(antreaAddonConfig, func(s *runtime.Scheme, g genericregistry.RESTOptionsGetter) (registryrest.Storage, error) {
-		clientset, err := kubernetes.NewForConfig(a.config)
-		if err != nil {
-			return nil, err
-		}
-		return addonregistryv1alpha1.NewAntreaAddonConfigREST(clientset), nil
+			clientset, err := kubernetes.NewForConfig(a.config)
+			if err != nil {
+				return nil, err
+			}
+			return addonregistryv1alpha1.NewAntreaAddonConfigREST(clientset), nil
 
-
-
-	}).
+		}).
 		WithOpenAPIDefinitions("addons-apiserver", "v1alpha1", openapi.GetOpenAPIDefinitions).
 		WithoutEtcd().
 		WithOptionsFns(a.selfSignedCertsServerOption, func(options *builder.ServerOptions) *builder.ServerOptions {
