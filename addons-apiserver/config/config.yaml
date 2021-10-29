@@ -31,7 +31,7 @@ rules:
       - get
       - list
       - watch
-  # Aggregated API server #TODO revisit these permissions
+  # Aggregated API server
   - apiGroups:
       - apiregistration.k8s.io
     resources:
@@ -40,10 +40,9 @@ rules:
       - get
       - create
       - update
-  - apiGroups:
-      - ""
-    resources:
-      - namespaces
+  # TODO revisit these permissions
+  - apiGroups: [""]
+    resources: ["namespaces"]
     verbs: ["list", "watch", "get", "update"]
   - apiGroups: ["admissionregistration.k8s.io"]
     resources: ["mutatingwebhookconfigurations"]
@@ -54,6 +53,9 @@ rules:
   - apiGroups: ["authorization.k8s.io"]
     resources: ["subjectaccessreviews"]
     verbs: ["create"]
+  - apiGroups: ["flowcontrol.apiserver.k8s.io"]
+    resources: ["prioritylevelconfigurations", "flowschemas"]
+    verbs: ["list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -86,7 +88,7 @@ spec:
         app: tanzu-addons-apiserver
     spec:
       containers:
-        - image: projects-stg.registry.vmware.com/tkg/vkatam/addons-apiserver:v0.6.0-dev-17-gd1b0742e-dirty
+        - image: projects-stg.registry.vmware.com/tkg/vkatam/addons-apiserver:v0.6.0-dev-18-gd5c497f4-dirty
           imagePullPolicy: Always
           name: tanzu-addons-apiserver
           resources:
