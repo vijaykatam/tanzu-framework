@@ -40,10 +40,61 @@ type AntreaAddonConfigList struct {
 }
 
 // AntreaAddonConfigSpec defines the desired state of AntreaAddonConfig
+// +tanzu-framework:data-value-converter-gen=true
 type AntreaAddonConfigSpec struct {
-	InfraProvider string `json:"infraProvider"`
-	ServiceCIDR   string `json:"serviceCIDR"`
-	ServiceCIDRv6 string `json:"serviceCIDRv6"`
+	InfraProvider string `json:"infraProvider" dataValue:"infraProvider"`
+
+	// +default="100.64.0.0/13"
+	// +dataValue="antrea.config.serviceCIDR"
+	ServiceCIDR *string `json:"serviceCIDR"`
+
+	// +default="encap"
+	// +dataValue="antrea.config.trafficEncapMode"
+	TrafficEncapMode *string `json:"trafficEncapMode"`
+
+	// +default=false
+	// +dataValue="antrea.config.noSNAT"
+	NoSNAT *bool `json:"noSNAT"`
+
+	// +dataValue="antrea.config.defaultMTU"
+	DefaultMTU string `json:"defaultMTU,omitempty"`
+
+	// +default="TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384"
+	// +dataValue="antrea.config.tlsCipherSuites"
+	TlsCipherSuites *string `json:"tlsCipherSuites"`
+
+	// +dataValue="antrea.config.featureGates"
+	FeatureGates *FeatureGates `json:"featureGates"`
+}
+
+type FeatureGates struct {
+	// +default=true
+	// +dataValue="antrea.config.featureGates.AntreaProxy"
+	AntreaProxy *bool `json:"antreaProxy"`
+
+	// +default=false
+	// +dataValue="antrea.config.featureGates.EndpointSlice"
+	EndpointSlice *bool `json:"endpointSlice"`
+
+	// +default=true
+	// +dataValue="antrea.config.featureGates.AntreaPolicy"
+	AntreaPolicy *bool `json:"antreaPolicy"`
+
+	// +default=false
+	// +dataValue="antrea.config.featureGates.NodePortLocal"
+	NodePortLocal *bool `json:"nodePortLocal"`
+
+	// +default=true
+	// +dataValue="antrea.config.featureGates.AntreaTraceflow"
+	AntreaTraceflow *bool `json:"antreaTraceflow"`
+
+	// +default=false
+	// +dataValue="antrea.config.featureGates.FlowExporter"
+	FlowExporter *bool `json:"flowExporter`
+
+	// +default=false
+	// +dataValue="antrea.config.featureGates.NetworkPolicyStats"
+	NetworkPolicyStats *bool `json:"networkPolicyStats"`
 }
 
 var _ resource.Object = &AntreaAddonConfig{}

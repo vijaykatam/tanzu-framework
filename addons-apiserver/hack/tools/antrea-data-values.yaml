@@ -1,0 +1,16 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+infraProvider: vsphere
+antrea:
+  config:
+    serviceCIDR: 100.64.0.0/13
+    trafficEncapMode: encap
+    noSNAT: false
+    tlsCipherSuites: TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384
+    featureGates:
+      AntreaProxy: true
+      EndpointSlice: false
+      AntreaPolicy: true
+      NodePortLocal: false
+      AntreaTraceflow: true

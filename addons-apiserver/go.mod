@@ -4,10 +4,13 @@ go 1.16
 
 require (
 	github.com/go-logr/logr v0.4.0
+	github.com/jeremywohl/flatten v1.0.1
+	github.com/k14s/ytt v0.37.0
+	github.com/pkg/errors v0.9.1
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	k8s.io/apimachinery v0.22.2
 	k8s.io/apiserver v0.22.2
 	k8s.io/client-go v0.22.2
-	k8s.io/code-generator v0.22.2
 	k8s.io/klog v1.0.0
 	k8s.io/kube-aggregator v0.22.1
 	k8s.io/kube-openapi v0.0.0-20210421082810-95288971da7e

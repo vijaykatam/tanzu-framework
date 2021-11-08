@@ -21,6 +21,7 @@ func GetOpenAPIDefinitions(ref common.ReferenceCallback) map[string]common.OpenA
 		"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis/addon/v1alpha1.AntreaAddonConfigList":   schema_pkg_apis_addon_v1alpha1_AntreaAddonConfigList(ref),
 		"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis/addon/v1alpha1.AntreaAddonConfigSpec":   schema_pkg_apis_addon_v1alpha1_AntreaAddonConfigSpec(ref),
 		"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis/addon/v1alpha1.AntreaAddonConfigStatus": schema_pkg_apis_addon_v1alpha1_AntreaAddonConfigStatus(ref),
+		"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis/addon/v1alpha1.FeatureGates":            schema_pkg_apis_addon_v1alpha1_FeatureGates(ref),
 		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroup":                                                            schema_pkg_apis_meta_v1_APIGroup(ref),
 		"k8s.io/apimachinery/pkg/apis/meta/v1.APIGroupList":                                                        schema_pkg_apis_meta_v1_APIGroupList(ref),
 		"k8s.io/apimachinery/pkg/apis/meta/v1.APIResource":                                                         schema_pkg_apis_meta_v1_APIResource(ref),
@@ -189,22 +190,49 @@ func schema_pkg_apis_addon_v1alpha1_AntreaAddonConfigSpec(ref common.ReferenceCa
 					},
 					"serviceCIDR": {
 						SchemaProps: spec.SchemaProps{
-							Default: "",
+							Default: "100.64.0.0/13",
 							Type:    []string{"string"},
 							Format:  "",
 						},
 					},
-					"serviceCIDRv6": {
+					"trafficEncapMode": {
 						SchemaProps: spec.SchemaProps{
-							Default: "",
+							Default: "encap",
 							Type:    []string{"string"},
 							Format:  "",
+						},
+					},
+					"noSNAT": {
+						SchemaProps: spec.SchemaProps{
+							Default: false,
+							Type:    []string{"boolean"},
+							Format:  "",
+						},
+					},
+					"defaultMTU": {
+						SchemaProps: spec.SchemaProps{
+							Type:   []string{"string"},
+							Format: "",
+						},
+					},
+					"tlsCipherSuites": {
+						SchemaProps: spec.SchemaProps{
+							Default: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384",
+							Type:    []string{"string"},
+							Format:  "",
+						},
+					},
+					"featureGates": {
+						SchemaProps: spec.SchemaProps{
+							Ref: ref("github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis/addon/v1alpha1.FeatureGates"),
 						},
 					},
 				},
-				Required: []string{"infraProvider", "serviceCIDR", "serviceCIDRv6"},
+				Required: []string{"infraProvider", "serviceCIDR", "trafficEncapMode", "noSNAT", "tlsCipherSuites", "featureGates"},
 			},
 		},
+		Dependencies: []string{
+			"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis/addon/v1alpha1.FeatureGates"},
 	}
 }
 
@@ -214,6 +242,68 @@ func schema_pkg_apis_addon_v1alpha1_AntreaAddonConfigStatus(ref common.Reference
 			SchemaProps: spec.SchemaProps{
 				Description: "AntreaAddonConfigStatus defines the observed state of AntreaAddonConfig",
 				Type:        []string{"object"},
+			},
+		},
+	}
+}
+
+func schema_pkg_apis_addon_v1alpha1_FeatureGates(ref common.ReferenceCallback) common.OpenAPIDefinition {
+	return common.OpenAPIDefinition{
+		Schema: spec.Schema{
+			SchemaProps: spec.SchemaProps{
+				Type: []string{"object"},
+				Properties: map[string]spec.Schema{
+					"antreaProxy": {
+						SchemaProps: spec.SchemaProps{
+							Default: true,
+							Type:    []string{"boolean"},
+							Format:  "",
+						},
+					},
+					"endpointSlice": {
+						SchemaProps: spec.SchemaProps{
+							Default: false,
+							Type:    []string{"boolean"},
+							Format:  "",
+						},
+					},
+					"antreaPolicy": {
+						SchemaProps: spec.SchemaProps{
+							Default: true,
+							Type:    []string{"boolean"},
+							Format:  "",
+						},
+					},
+					"nodePortLocal": {
+						SchemaProps: spec.SchemaProps{
+							Default: false,
+							Type:    []string{"boolean"},
+							Format:  "",
+						},
+					},
+					"antreaTraceflow": {
+						SchemaProps: spec.SchemaProps{
+							Default: true,
+							Type:    []string{"boolean"},
+							Format:  "",
+						},
+					},
+					"flowExporter": {
+						SchemaProps: spec.SchemaProps{
+							Default: false,
+							Type:    []string{"boolean"},
+							Format:  "",
+						},
+					},
+					"networkPolicyStats": {
+						SchemaProps: spec.SchemaProps{
+							Default: false,
+							Type:    []string{"boolean"},
+							Format:  "",
+						},
+					},
+				},
+				Required: []string{"antreaProxy", "endpointSlice", "antreaPolicy", "nodePortLocal", "antreaTraceflow", "flowExporter", "networkPolicyStats"},
 			},
 		},
 	}

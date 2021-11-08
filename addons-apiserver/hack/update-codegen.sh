@@ -24,4 +24,8 @@ bash "${CODEGEN_PKG}/generate-internal-groups.sh" "deepcopy,defaulter,conversion
   github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/generated github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis \
   "addon:v1alpha1" \
   --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt
+#bash "${CODEGEN_PKG}/generate-internal-groups.sh" "defaulter" \
+#  github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/generated github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apis \
+#  "addon:v1alpha1" \
+#  --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt
 rm -rf vendor/

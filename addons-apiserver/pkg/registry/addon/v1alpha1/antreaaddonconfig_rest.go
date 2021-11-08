@@ -58,12 +58,11 @@ func (r *AntreaAddonConfigREST) List(ctx context.Context, options *metainternalv
 	for _, s := range secrets.Items {
 		antreaAddonConfig := v1alpha1.AntreaAddonConfig{}
 		antreaAddonConfig.ObjectMeta = s.ObjectMeta
-		antreaAddonConfig.Spec.InfraProvider
-		antreaAddonConfigs = append(antreaAddonConfigs,
-			v1alpha1.AntreaAddonConfig{Name: },
-		)
+		//antreaAddonConfig.Spec.DeepCopyInto()
+		antreaAddonConfigs = append(antreaAddonConfigs, antreaAddonConfig)
+
 	}
-	return &v1alpha1.AntreaAddonConfigList{}, nil
+	return &v1alpha1.AntreaAddonConfigList{Items: antreaAddonConfigs}, nil
 }
 func (r *AntreaAddonConfigREST) Update(ctx context.Context, name string, objInfo rest.UpdatedObjectInfo, createValidation rest.ValidateObjectFunc, updateValidation rest.ValidateObjectUpdateFunc, forceAllowCreate bool, options *metav1.UpdateOptions) (runtime.Object, bool, error) {
 	return &v1alpha1.AntreaAddonConfig{}, false, nil

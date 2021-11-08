@@ -15,5 +15,63 @@ import (
 // Public to allow building arbitrary schemes.
 // All generated defaulters are covering - they call all nested defaulters.
 func RegisterDefaults(scheme *runtime.Scheme) error {
+	scheme.AddTypeDefaultingFunc(&AntreaAddonConfig{}, func(obj interface{}) { SetObjectDefaults_AntreaAddonConfig(obj.(*AntreaAddonConfig)) })
+	scheme.AddTypeDefaultingFunc(&AntreaAddonConfigList{}, func(obj interface{}) { SetObjectDefaults_AntreaAddonConfigList(obj.(*AntreaAddonConfigList)) })
 	return nil
+}
+
+func SetObjectDefaults_AntreaAddonConfig(in *AntreaAddonConfig) {
+	if in.Spec.ServiceCIDR == nil {
+		var ptrVar1 string = "100.64.0.0/13"
+		in.Spec.ServiceCIDR = &ptrVar1
+	}
+	if in.Spec.TrafficEncapMode == nil {
+		var ptrVar1 string = "encap"
+		in.Spec.TrafficEncapMode = &ptrVar1
+	}
+	if in.Spec.NoSNAT == nil {
+		var ptrVar1 bool = false
+		in.Spec.NoSNAT = &ptrVar1
+	}
+	if in.Spec.TlsCipherSuites == nil {
+		var ptrVar1 string = "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_256_GCM_SHA384"
+		in.Spec.TlsCipherSuites = &ptrVar1
+	}
+	if in.Spec.FeatureGates != nil {
+		if in.Spec.FeatureGates.AntreaProxy == nil {
+			var ptrVar1 bool = true
+			in.Spec.FeatureGates.AntreaProxy = &ptrVar1
+		}
+		if in.Spec.FeatureGates.EndpointSlice == nil {
+			var ptrVar1 bool = false
+			in.Spec.FeatureGates.EndpointSlice = &ptrVar1
+		}
+		if in.Spec.FeatureGates.AntreaPolicy == nil {
+			var ptrVar1 bool = true
+			in.Spec.FeatureGates.AntreaPolicy = &ptrVar1
+		}
+		if in.Spec.FeatureGates.NodePortLocal == nil {
+			var ptrVar1 bool = false
+			in.Spec.FeatureGates.NodePortLocal = &ptrVar1
+		}
+		if in.Spec.FeatureGates.AntreaTraceflow == nil {
+			var ptrVar1 bool = true
+			in.Spec.FeatureGates.AntreaTraceflow = &ptrVar1
+		}
+		if in.Spec.FeatureGates.FlowExporter == nil {
+			var ptrVar1 bool = false
+			in.Spec.FeatureGates.FlowExporter = &ptrVar1
+		}
+		if in.Spec.FeatureGates.NetworkPolicyStats == nil {
+			var ptrVar1 bool = false
+			in.Spec.FeatureGates.NetworkPolicyStats = &ptrVar1
+		}
+	}
+}
+
+func SetObjectDefaults_AntreaAddonConfigList(in *AntreaAddonConfigList) {
+	for i := range in.Items {
+		a := &in.Items[i]
+		SetObjectDefaults_AntreaAddonConfig(a)
+	}
 }
