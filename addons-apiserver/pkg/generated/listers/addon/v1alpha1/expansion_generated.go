@@ -5,6 +5,18 @@
 
 package v1alpha1
 
+// AddonConfigListerExpansion allows custom methods to be added to
+// AddonConfigLister.
+type AddonConfigListerExpansion interface{}
+
+// AddonConfigSpecListerExpansion allows custom methods to be added to
+// AddonConfigSpecLister.
+type AddonConfigSpecListerExpansion interface{}
+
+// AddonConfigSpecNamespaceListerExpansion allows custom methods to be added to
+// AddonConfigSpecNamespaceLister.
+type AddonConfigSpecNamespaceListerExpansion interface{}
+
 // AntreaAddonConfigListerExpansion allows custom methods to be added to
 // AntreaAddonConfigLister.
 type AntreaAddonConfigListerExpansion interface{}

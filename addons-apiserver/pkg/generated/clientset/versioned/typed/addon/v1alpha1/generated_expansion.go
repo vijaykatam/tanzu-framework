@@ -5,4 +5,8 @@
 
 package v1alpha1
 
+type AddonConfigExpansion interface{}
+
+type AddonConfigSpecExpansion interface{}
+
 type AntreaAddonConfigExpansion interface{}

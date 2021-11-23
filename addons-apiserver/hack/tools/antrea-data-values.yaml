@@ -14,3 +14,63 @@ antrea:
       AntreaPolicy: true
       NodePortLocal: false
       AntreaTraceflow: true
+
+---
+# cluster class spec
+spec:
+  variables:
+    definitions:
+      - name: ANTREA_TRACEFLOW
+        schema:
+          openAPIV3Schema:
+            type: boolean
+            default: true
+---
+# select calico
+spec:
+  variables:
+    - name: ANTREA_TRACEFLOW
+      value: false
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  labels:
+    addon.tkg.tanzu.vmware.com/cni: antrea
+    addon.tkg.tanzu.vmware.com/antreaaddonconfig: antrea-1
+    ...
+
+---
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  annotations:
+    #optional, recommended for core package authors. If not provided, pick the latest version.
+    tkg.tanzu.vmware.com/config-GVK: addon.tanzu.vmware.com/v1alpha1,Kind=AntreaAddonConfig
+  name: antrea.tanzu.vmware.com.0.13.3+vmware.1-tkg.1-rc.5
+
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: my-cluster-1
+  namespace: default
+  labels:
+    run.tanzu.vmware.com/tkr: v1.21.2---vmware.1-tkg.1
+
+---
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  annotations:
+    tkg.tanzu.vmware.com/addon-type: cpi
+    tkg.tanzu.vmware.com/infrastructure-provider: vsphere
+    tkg.tanzu.vmware.com/infrastructure-provider-version: 7.0.1
+  name: vsphere-cpi.tanzu.vmware.com.1.21.0+vmware.1-tkg.1-rc.5
+---
+apiVersion: data.packaging.carvel.dev/v1alpha1
+kind: Package
+metadata:
+  annotations:
+    tkg.tanzu.vmware.com/addon-type: cni
+  name: antrea.tanzu.vmware.com.0.13.3+vmware.1-tkg.1-rc.5

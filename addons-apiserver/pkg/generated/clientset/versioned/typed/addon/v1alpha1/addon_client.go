@@ -13,12 +13,22 @@ import (
 
 type AddonV1alpha1Interface interface {
 	RESTClient() rest.Interface
+	AddonConfigsGetter
+	AddonConfigSpecsGetter
 	AntreaAddonConfigsGetter
 }
 
 // AddonV1alpha1Client is used to interact with features provided by the addon.tanzu.vmware.com group.
 type AddonV1alpha1Client struct {
 	restClient rest.Interface
+}
+
+func (c *AddonV1alpha1Client) AddonConfigs() AddonConfigInterface {
+	return newAddonConfigs(c)
+}
+
+func (c *AddonV1alpha1Client) AddonConfigSpecs(namespace string) AddonConfigSpecInterface {
+	return newAddonConfigSpecs(c, namespace)
 }
 
 func (c *AddonV1alpha1Client) AntreaAddonConfigs(namespace string) AntreaAddonConfigInterface {

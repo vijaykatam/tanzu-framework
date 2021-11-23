@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/jeremywohl/flatten"
 	"github.com/k14s/ytt/pkg/cmd/ui"
 	"github.com/k14s/ytt/pkg/files"
 	"github.com/k14s/ytt/pkg/workspace"
 	"gopkg.in/yaml.v3"
-	"os"
 )
 
 const antreaDataValue = `

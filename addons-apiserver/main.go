@@ -4,11 +4,15 @@
 package main
 
 import (
-	"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apiserver"
+	"os"
+
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"k8s.io/klog/klogr"
-	"os"
 	ctrl "sigs.k8s.io/controller-runtime"
+
+	"github.com/vmware-tanzu/tanzu-framework/addons-apiserver/pkg/apiserver"
+	// TODO remove
+	_ "k8s.io/code-generator"
 )
 
 var (

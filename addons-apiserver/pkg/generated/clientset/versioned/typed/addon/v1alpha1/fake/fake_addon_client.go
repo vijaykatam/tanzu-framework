@@ -15,6 +15,14 @@ type FakeAddonV1alpha1 struct {
 	*testing.Fake
 }
 
+func (c *FakeAddonV1alpha1) AddonConfigs() v1alpha1.AddonConfigInterface {
+	return &FakeAddonConfigs{c}
+}
+
+func (c *FakeAddonV1alpha1) AddonConfigSpecs(namespace string) v1alpha1.AddonConfigSpecInterface {
+	return &FakeAddonConfigSpecs{c, namespace}
+}
+
 func (c *FakeAddonV1alpha1) AntreaAddonConfigs(namespace string) v1alpha1.AntreaAddonConfigInterface {
 	return &FakeAntreaAddonConfigs{c, namespace}
 }

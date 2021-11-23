@@ -3,15 +3,16 @@ package generators
 import (
 	"fmt"
 	"io"
+	"path/filepath"
+	"reflect"
+	"strings"
+
 	"k8s.io/gengo/args"
 	"k8s.io/gengo/examples/set-gen/sets"
 	"k8s.io/gengo/generator"
 	"k8s.io/gengo/namer"
 	"k8s.io/gengo/types"
 	"k8s.io/klog/v2"
-	"path/filepath"
-	"reflect"
-	"strings"
 )
 
 // CustomArgs is used tby the go2idl framework to pass args specific to this
@@ -308,7 +309,6 @@ func fromDataValueMethod(t *types.Type) (*types.Signature, error) {
 
 	return f.Signature, nil
 }
-
 
 // fromDataValueMethodOrDie returns the signatrue of a DeepCopy method, nil or calls klog.Fatalf
 // if the type does not match.
